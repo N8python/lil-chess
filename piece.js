@@ -223,6 +223,11 @@ const Pawn = Piece({
         const inStartingPos = this.team === "white" ? this.pos[1] === 6 : this.pos[1] === 1;
         const yDiff = this.pos[1] - newPos[1];
         const xDiff = Math.abs(this.pos[0] - newPos[0]);
+        for (const piece of board.pieces) {
+            if (piece.pos[0] === newPos[0] && piece.pos[1] === newPos[1] && piece.team === this.team) {
+                return false;
+            }
+        }
         if (this.team === "white") {
             if (Math.abs(newPos[0] - this.pos[0]) === 1 && newPos[1] === this.pos[1] - 1) {
                 for (const piece of board.pieces) {
