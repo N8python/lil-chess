@@ -241,6 +241,9 @@ const Pawn = Piece({
                     if (piece.pos[0] === newPos[0] && piece.pos[1] === newPos[1]) {
                         return false;
                     }
+                    if (yDiff === 2 && piece.pos[0] === newPos[0] && piece.pos[1] === newPos[1] + 1) {
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -255,6 +258,9 @@ const Pawn = Piece({
             if (yDiff < 0 && yDiff >= -1 - Number(inStartingPos) && xDiff === 0) {
                 for (const piece of board.pieces) {
                     if (piece.pos[0] === newPos[0] && piece.pos[1] === newPos[1]) {
+                        return false;
+                    }
+                    if (yDiff === -2 && piece.pos[0] === newPos[0] && piece.pos[1] === newPos[1] - 1) {
                         return false;
                     }
                 }

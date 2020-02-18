@@ -3,7 +3,7 @@ const BOARD_MARGIN = 20;
 const TILE_SIZE = BOARD_SIZE / 8;
 let turn = 0;
 let winner;
-const canCastle = {
+let canCastle = {
     white: true,
     black: true
 }
@@ -132,6 +132,7 @@ function setup() {
         }))
     }
 }
+let counter = 0;
 
 function draw() {
     background(255);
@@ -148,6 +149,44 @@ function draw() {
     if (winner) {
         text(`Winner: ${winner}`, BOARD_SIZE + BOARD_MARGIN, 60);
     }
+    text(`The AI is playing as \nBlack`, BOARD_SIZE + BOARD_MARGIN, 100);
+    /*if (turn % 2 === 0) {
+        counter += 1;
+        if (counter === 10) {
+            board.minimax(3, -Infinity, Infinity, true);
+            const move = board.makeMove(board.bestMove);
+            move.exec();
+            counter = 0;
+            if (board.checkMate("white") && !winner) {
+                winner = "Black";
+                Swal.fire("Checkmate - Black Wins!")
+            } else if (board.checkMate("black") && !winner) {
+                winner = "White";
+                Swal.fire("Checkmate - White Wins!")
+            } else {
+                turn += 1;
+            }
+        }
+    }*/
+    if (turn % 2 === 1) {
+        counter += 1;
+        if (counter === 10) {
+            board.minimax(3, -Infinity, Infinity, false);
+            const move = board.makeMove(board.bestMove);
+            move.exec();
+            counter = 0;
+            if (board.checkMate("white") && !winner) {
+                winner = "Black";
+                Swal.fire("Checkmate - Black Wins!")
+            } else if (board.checkMate("black") && !winner) {
+                winner = "White";
+                Swal.fire("Checkmate - White Wins!")
+            } else {
+                turn += 1;
+            }
+        }
+    }
+
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if (i % 2 === 0) {

@@ -8,6 +8,14 @@ const board = {
             piece.render();
         })
     },
+    values: {
+        king: 0,
+        queen: 9,
+        rook: 5,
+        knight: 3,
+        bishop: 3.25,
+        pawn: 1
+    },
     registerClick([x, y]) {
         this.pieces.forEach(piece => {
             if (piece.pos[0] === x && piece.pos[1] === y) {
@@ -225,7 +233,10 @@ const board = {
         return inCheck;
     },
     checkMate(team) {
-        const teamMoves = this.allMoves().filter(({ piece }) => piece.team === team);
+        if (!this.inCheck(team)) {
+            return false;
+        }
+        const teamMoves = this.allMoves(team);
         let safe = false;
         teamMoves.forEach(({ piece, to }) => {
             const oldPos = piece.pos;
@@ -247,20 +258,160 @@ const board = {
         });
         return !safe;
     },
-    allMoves() {
+    allMoves(team) {
         const validMoves = [];
         this.pieces.forEach(piece => {
-            for (let i = 0; i < 8; i++) {
-                for (let j = 0; j < 8; j++) {
-                    if (this.validMove(piece, [i, j])) {
-                        validMoves.push({
-                            piece,
-                            to: [i, j]
-                        })
+            if (piece.team === team) {
+                for (let i = 0; i < 8; i++) {
+                    for (let j = 0; j < 8; j++) {
+                        if (this.validMove(piece, [i, j])) {
+                            validMoves.push({
+                                piece,
+                                to: [i, j]
+                            })
+                        }
                     }
                 }
             }
         });
         return validMoves;
+    },
+    score() {
+        let score = 0;
+        this.pieces.forEach(piece => {
+            if (piece.team === "black") {
+                score -= this.values[piece.name];
+                if (piece.name === "king" || piece.name === "queen") {
+                    score += 0.1 * (piece.pos[1] / 7);
+                } else {
+                    score -= 0.1 * (piece.pos[1] / 7);
+                }
+            } else {
+                score += this.values[piece.name];
+                if (piece.name === "king" || piece.name === "queen") {
+                    score -= 0.1 * ((7 - piece.pos[1]) / 7)
+                } else {
+                    score += 0.1 * ((7 - piece.pos[1]) / 7)
+                }
+            }
+        });
+        if (this.checkMate("white")) {
+            score -= 10000;
+        } else if (this.checkMate("black")) {
+            score += 10000;
+        }
+        if (this.inCheck("white")) {
+            score -= 1;
+        } else if (this.inCheck("black")) {
+            score += 1;
+        }
+        return score;
+    },
+    makeMove({ piece, to }) {
+        let originalPos = piece.pos;
+        let removedPiece;
+        let theQueen;
+        return {
+            exec() {
+                piece.pos = to;
+                board.pieces.forEach((p, index) => {
+                    if (p.pos[0] === to[0] && p.pos[1] === to[1] && p !== piece) {
+                        removedPiece = p;
+                        board.pieces.splice(index, 1);
+                    }
+                })
+                if (piece.name === "pawn" && piece.team === "white" && to[1] === 0) {
+                    board.pieces.splice(board.pieces.indexOf(piece), 1);
+                    removedPiece = piece;
+                    const queen = Queen({
+                        team: "white",
+                        pos: [to[0], to[1]],
+                        img: whiteQueen
+                    });
+                    theQueen = queen;
+                    board.pieces.push(queen);
+                }
+                if (piece.name === "pawn" && piece.team === "black" && to[1] === 7) {
+                    board.pieces.splice(board.pieces.indexOf(piece), 1);
+                    removedPiece = piece;
+                    const queen = Queen({
+                        team: "black",
+                        pos: [to[0], to[1]],
+                        img: blackQueen
+                    });
+                    theQueen = queen;
+                    board.pieces.push(queen);
+                }
+            },
+            undo() {
+                piece.pos = originalPos;
+                if (removedPiece) {
+                    board.pieces.push(removedPiece);
+                }
+                if (theQueen) {
+                    board.pieces.splice(board.pieces.indexOf(theQueen), 1);
+                }
+            }
+        }
+    },
+    minimax(depth, alpha, beta, maximingPlayer, top = true) {
+        const startTime = Date.now();
+        let oldCastle;
+        if (top) {
+            oldCastle = canCastle;
+        }
+        const score = this.score();
+        if (depth === 0 || Math.abs(score) > 1000) {
+            return score;
+        }
+        if (maximingPlayer) {
+            let maxEval = -Infinity;
+            for (const m of this.allMoves("white")) {
+                const move = this.makeMove(m);
+                move.exec();
+                const evaluation = this.minimax(depth - 1, alpha, beta, false, false);
+                const oldEval = maxEval;
+                maxEval = Math.max(maxEval, evaluation);
+                if (top && oldEval !== maxEval) {
+                    this.bestMove = m;
+                }
+                alpha = Math.max(alpha, evaluation);
+                move.undo();
+                if (top && Date.now() - startTime > 20000) {
+                    return maxEval;
+                }
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            if (top) {
+                canCastle = oldCastle;
+            }
+            return maxEval;
+        } else {
+            let minEval = Infinity;
+            for (const m of this.allMoves("black")) {
+                const move = this.makeMove(m);
+                move.exec();
+                const evaluation = this.minimax(depth - 1, alpha, beta, true, false);
+                const oldEval = minEval;
+                minEval = Math.min(minEval, evaluation);
+                if (top && oldEval !== minEval) {
+                    this.bestMove = m;
+                }
+                beta = Math.min(beta, evaluation);
+                move.undo();
+                if (top && Date.now() - startTime > 20000) {
+                    return minEval;
+                }
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            if (top) {
+                canCastle = oldCastle;
+            }
+            return minEval;
+        }
     }
 }
