@@ -9,12 +9,77 @@ const board = {
         })
     },
     values: {
-        king: 0,
+        king: 90,
         queen: 9,
         rook: 5,
         knight: 3,
         bishop: 3.25,
         pawn: 1
+    },
+    tables: {
+        white: {
+            pawn: [
+                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
+                [1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0, 1.0],
+                [0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5, 0.5],
+                [0.0, 0.0, 0.0, 2.0, 2.0, 0.0, 0.0, 0.0],
+                [0.5, -0.5, -1.0, 0.0, 0.0, -1.0, -0.5, 0.5],
+                [0.5, 1.0, 1.0, -2.0, -2.0, 1.0, 1.0, 0.5],
+                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            ],
+            knight: [
+                [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+                [-4.0, -2.0, 0.0, 0.0, 0.0, 0.0, -2.0, -4.0],
+                [-3.0, 0.0, 1.0, 1.5, 1.5, 1.0, 0.0, -3.0],
+                [-3.0, 0.5, 1.5, 2.0, 2.0, 1.5, 0.5, -3.0],
+                [-3.0, 0.0, 1.5, 2.0, 2.0, 1.5, 0.0, -3.0],
+                [-3.0, 0.5, 1.0, 1.5, 1.5, 1.0, 0.5, -3.0],
+                [-4.0, -2.0, 0.0, 0.5, 0.5, 0.0, -2.0, -4.0],
+                [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
+            ],
+            bishop: [
+                [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+                [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+                [-1.0, 0.0, 0.5, 1.0, 1.0, 0.5, 0.0, -1.0],
+                [-1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5, -1.0],
+                [-1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, -1.0],
+                [-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0],
+                [-1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, -1.0],
+                [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
+            ],
+            rook: [
+                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5],
+                [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+                [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+                [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+                [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+                [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+                [0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0]
+            ],
+            queen: [
+                [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+                [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+                [-1.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -1.0],
+                [-0.5, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -0.5],
+                [0.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -0.5],
+                [-1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.0, -1.0],
+                [-1.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, -1.0],
+                [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
+            ],
+            king: [
+                [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+                [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+                [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+                [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+                [-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+                [-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+                [2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0],
+                [2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0]
+            ]
+        },
+        black: {}
     },
     registerClick([x, y]) {
         this.pieces.forEach(piece => {
@@ -280,19 +345,19 @@ const board = {
         let score = 0;
         this.pieces.forEach(piece => {
             if (piece.team === "black") {
-                score -= this.values[piece.name];
-                if (piece.name === "king" || piece.name === "queen") {
+                score -= this.values[piece.name] * (1 + this.tables[piece.team][piece.name][piece.pos[0]][piece.pos[1]] / 25);
+                /*if (piece.name === "king" || piece.name === "queen") {
                     score += 0.1 * (piece.pos[1] / 7);
-                } else {
-                    score -= 0.1 * (piece.pos[1] / 7);
-                }
+                } else {*/
+                score -= 0.1 * (piece.pos[1] / 7);
+                //}
             } else {
-                score += this.values[piece.name];
-                if (piece.name === "king" || piece.name === "queen") {
+                score += this.values[piece.name] * (1 + this.tables[piece.team][piece.name][piece.pos[0]][piece.pos[1]] / 25);
+                /*if (piece.name === "king" || piece.name === "queen") {
                     score -= 0.1 * ((7 - piece.pos[1]) / 7)
-                } else {
-                    score += 0.1 * ((7 - piece.pos[1]) / 7)
-                }
+                } else {*/
+                score += 0.1 * ((7 - piece.pos[1]) / 7)
+                    //}
             }
         });
         if (this.checkMate("white")) {
@@ -366,14 +431,20 @@ const board = {
         }
         if (maximingPlayer) {
             let maxEval = -Infinity;
+            let daMove;
             for (const m of this.allMoves("white")) {
                 const move = this.makeMove(m);
                 move.exec();
+                turn += 1;
                 const evaluation = this.minimax(depth - 1, alpha, beta, false, false);
+                turn -= 1;
                 const oldEval = maxEval;
                 maxEval = Math.max(maxEval, evaluation);
-                if (top && oldEval !== maxEval) {
+                if (top && oldEval !== maxEval && evaluation > oldEval) {
                     this.bestMove = m;
+                }
+                if (oldEval !== maxEval && evaluation > oldEval) {
+                    daMove = m;
                 }
                 alpha = Math.max(alpha, evaluation);
                 move.undo();
@@ -393,10 +464,12 @@ const board = {
             for (const m of this.allMoves("black")) {
                 const move = this.makeMove(m);
                 move.exec();
+                turn += 1;
                 const evaluation = this.minimax(depth - 1, alpha, beta, true, false);
+                turn -= 1;
                 const oldEval = minEval;
                 minEval = Math.min(minEval, evaluation);
-                if (top && oldEval !== minEval) {
+                if (top && oldEval !== minEval && evaluation < oldEval) {
                     this.bestMove = m;
                 }
                 beta = Math.min(beta, evaluation);
@@ -415,3 +488,6 @@ const board = {
         }
     }
 }
+Object.keys(board.tables.white).forEach(piece => {
+    board.tables.black[piece] = board.tables.white[piece].slice().reverse();
+})
