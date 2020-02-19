@@ -9,7 +9,7 @@ const board = {
         })
     },
     values: {
-        king: 90,
+        king: 1,
         queen: 9,
         rook: 5,
         knight: 3,
