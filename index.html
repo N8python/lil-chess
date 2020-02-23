@@ -14,6 +14,11 @@
 </head>
 
 <body>
+    <button onclick="document.getElementById('board').value = board.toString()">Get Board</button>
+    <button onclick="board.fromString(prompt('Enter a board:'))">Load Board</button>
+    <button onclick="(board.fromString(lastBoard), (turn > 0) ? turn -= 1 : 3)">Undo</button>
+    <textarea id="board" placeholder="The Board Goes Here..."></textarea>
+    <h1 id="val" style="float:right">Evaluation:</p>
 </body>
 
 </html>

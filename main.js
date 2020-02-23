@@ -19,6 +19,7 @@ let whiteKnight;
 let whitePawn;
 let whiteQueen;
 let whiteRook;
+let lastBoard;
 
 function preload() {
     blackBishop = loadImage("assets/black-bishop.png")
@@ -131,6 +132,7 @@ function setup() {
             img: blackPawn
         }))
     }
+    lastBoard = board.toString();
 }
 let counter = 0;
 
@@ -150,7 +152,8 @@ function draw() {
         text(`Winner: ${winner}`, BOARD_SIZE + BOARD_MARGIN, 60);
     }
     text(`The AI is playing as \nBlack`, BOARD_SIZE + BOARD_MARGIN, 100);
-    /*if (turn % 2 === 0) {
+    if (turn % 2 === 0) {
+        lastBoard = board.toString();
         counter += 1;
         if (counter === 10) {
             board.minimax(3, -Infinity, Infinity, true);
@@ -167,8 +170,9 @@ function draw() {
                 turn += 1;
             }
         }
-    }*/
-    if (turn % 2 === 1) {
+    }
+    /*if (turn % 2 === 1) {
+        lastBoard = board.toString();
         counter += 1;
         if (counter === 10) {
             board.minimax(3, -Infinity, Infinity, false);
@@ -185,7 +189,7 @@ function draw() {
                 turn += 1;
             }
         }
-    }
+    }*/
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -224,7 +228,12 @@ function mousePressed() {
 
 function mouseReleased() {
     if (!winner) {
+        const daBoard = board.toString();
+        const oldTurn = turn;
         board.registerRelease(mousePos());
+        if (oldTurn !== turn) {
+            lastBoard = daBoard;
+        }
     }
     if (board.checkMate("white") && !winner) {
         winner = "Black";
