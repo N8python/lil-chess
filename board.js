@@ -45,7 +45,7 @@ const board = {
     tables: {
         white: {
             pawn: [
-                [10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
                 [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
                 [1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0, 1.0],
                 [0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5, 0.5],
@@ -405,47 +405,55 @@ const board = {
         let removedPiece;
         let removedIndex;
         let theQueen;
+        let pieceLostInPromotion;
+        let plipIndex;
         return {
             exec() {
                 piece.pos = to;
+                if (piece.name === "pawn" && piece.team === "white" && to[1] === 0) {
+                    pieceLostInPromotion = piece;
+                    plipIndex = board.pieces.indexOf(piece);
+                    board.pieces.splice(board.pieces.indexOf(piece), 1);
+                    const queen = Queen({
+                        team: "white",
+                        pos: [to[0], to[1]],
+                        img: whiteQueen
+                    });
+                    theQueen = queen;
+                    board.pieces.push(queen);
+
+                }
+                if (piece.name === "pawn" && piece.team === "black" && to[1] === 7) {
+                    pieceLostInPromotion = piece;
+                    plipIndex = board.pieces.indexOf(piece);
+                    board.pieces.splice(board.pieces.indexOf(piece), 1);
+                    const queen = Queen({
+                        team: "black",
+                        pos: [to[0], to[1]],
+                        img: blackQueen
+                    });
+                    theQueen = queen;
+                    board.pieces.push(queen);
+                }
                 board.pieces.forEach((p, index) => {
-                        if (p.pos[0] === to[0] && p.pos[1] === to[1] && p !== piece) {
-                            removedPiece = p;
-                            removedIndex = index;
-                            board.pieces.splice(index, 1);
-                        }
-                    })
-                    /*if (piece.name === "pawn" && piece.team === "white" && to[1] === 0) {
-                        board.pieces.splice(board.pieces.indexOf(piece), 1);
-                        removedPiece = piece;
-                        const queen = Queen({
-                            team: "white",
-                            pos: [to[0], to[1]],
-                            img: whiteQueen
-                        });
-                        theQueen = queen;
-                        board.pieces.push(queen);
+                    if (p.pos[0] === to[0] && p.pos[1] === to[1] && p !== piece && p !== theQueen) {
+                        removedPiece = p;
+                        removedIndex = index;
+                        board.pieces.splice(index, 1);
                     }
-                    if (piece.name === "pawn" && piece.team === "black" && to[1] === 7) {
-                        board.pieces.splice(board.pieces.indexOf(piece), 1);
-                        removedPiece = piece;
-                        const queen = Queen({
-                            team: "black",
-                            pos: [to[0], to[1]],
-                            img: blackQueen
-                        });
-                        theQueen = queen;
-                        board.pieces.push(queen);
-                    }*/
+                })
             },
             undo() {
                 piece.pos = originalPos;
                 if (removedPiece) {
                     board.pieces.splice(removedIndex, 0, removedPiece);
                 }
-                /*if (theQueen) {
+                if (pieceLostInPromotion) {
+                    board.pieces.splice(plipIndex, 0, pieceLostInPromotion);
+                }
+                if (theQueen) {
                     board.pieces.splice(board.pieces.indexOf(theQueen), 1);
-                }*/
+                }
             }
         }
     },
@@ -461,10 +469,6 @@ const board = {
 
         let evaluation = maximizingPlayer ? -Infinity : Infinity;
         const team = maximizingPlayer ? "white" : "black";
-        let beginning;
-        if (top) {
-            beginning = board.toString();
-        }
         for (const m of this.allMoves(team)) {
             const move = this.makeMove(m);
             move.exec();
@@ -487,22 +491,8 @@ const board = {
                 break;
             }
         }
-        if (beginning !== board.toString() && top) {
-            console.log(beginning);
-            console.log(board.toString())
-        }
         if (top) {
-            console.log("Verdict:")
-            console.log(this.bestMove, evaluation)
-            console.log("------------------");
-            const move = this.makeMove(this.bestMove);
-            move.exec();
-            turn += 1;
-            const eval1 = this.minimax(depth - 1, alpha, beta, true, false);
             document.getElementById("val").innerHTML = `Evaluation: ${evaluation.toFixed(3)}`;
-            turn -= 1;
-            move.undo();
-            console.log("------------------");
         }
         if (top) {
             canCastle = oldCastle;
