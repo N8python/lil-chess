@@ -152,7 +152,7 @@ function draw() {
         text(`Winner: ${winner}`, BOARD_SIZE + BOARD_MARGIN, 60);
     }
     text(`The AI is playing as \nBlack`, BOARD_SIZE + BOARD_MARGIN, 100);
-    if (turn % 2 === 0) {
+    /*if (turn % 2 === 0) {
         lastBoard = board.toString();
         counter += 1;
         if (counter === 10) {
@@ -170,8 +170,8 @@ function draw() {
                 turn += 1;
             }
         }
-    }
-    /*if (turn % 2 === 1) {
+    }*/
+    if (turn % 2 === 1) {
         lastBoard = board.toString();
         counter += 1;
         if (counter === 10) {
@@ -189,7 +189,7 @@ function draw() {
                 turn += 1;
             }
         }
-    }*/
+    }
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
