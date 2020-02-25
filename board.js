@@ -45,7 +45,7 @@ const board = {
     tables: {
         white: {
             pawn: [
-                [0, 0, 0, 0, 0, 0, 0, 0],
+                [100, 100, 100, 100, 100, 100, 100, 100],
                 [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
                 [1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0, 1.0],
                 [0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5, 0.5],
@@ -405,6 +405,8 @@ const board = {
         let removedPiece;
         let removedIndex;
         let theQueen;
+        let theRook;
+        let originalRookPos;
         let pieceLostInPromotion;
         let plipIndex;
         return {
@@ -435,6 +437,28 @@ const board = {
                     theQueen = queen;
                     board.pieces.push(queen);
                 }
+                if (piece.name === "king" && originalPos[0] === 4 && originalPos[1] === 7) {
+                    if (to[0] === 6 && to[1] === 7) {
+                        theRook = board.pieces.filter((piece) => piece.name === "rook" && piece.pos[0] === 7 && piece.pos[1] === 7);
+                        originalRookPos = theRook.pos;
+                        theRook.pos = [5, 7]
+                    } else if (to[0] === 2 && to[1] === 7) {
+                        theRook = board.pieces.filter((piece) => piece.name === "rook" && piece.pos[0] === 0 && piece.pos[1] === 7);
+                        originalRookPos = theRook.pos;
+                        theRook.pos = [3, 7]
+                    }
+                }
+                if (piece.name === "king" && originalPos[0] === 4 && originalPos[1] === 0) {
+                    if (to[0] === 6 && to[1] === 0) {
+                        theRook = board.pieces.filter((piece) => piece.name === "rook" && piece.pos[0] === 7 && piece.pos[1] === 0);
+                        originalRookPos = theRook.pos;
+                        theRook.pos = [5, 0]
+                    } else if (to[0] === 2 && to[1] === 0) {
+                        theRook = board.pieces.filter((piece) => piece.name === "rook" && piece.pos[0] === 0 && piece.pos[1] === 0);
+                        originalRookPos = theRook.pos;
+                        theRook.pos = [3, 0]
+                    }
+                }
                 board.pieces.forEach((p, index) => {
                     if (p.pos[0] === to[0] && p.pos[1] === to[1] && p !== piece && p !== theQueen) {
                         removedPiece = p;
@@ -445,6 +469,9 @@ const board = {
             },
             undo() {
                 piece.pos = originalPos;
+                if (theRook && originalRookPos) {
+                    theRook.pos = originalRookPos;
+                }
                 if (removedPiece) {
                     board.pieces.splice(removedIndex, 0, removedPiece);
                 }

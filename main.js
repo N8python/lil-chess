@@ -30,6 +30,9 @@ function endTurn() {
     } else if (board.checkMate("black") && !winner) {
         winner = "White";
         Swal.fire("Checkmate - White Wins!")
+    } else if (board.allMoves("white").length === 0 || board.allMoves("black").length === 0 && !winner) {
+        winner = "Draw";
+        Swal.fire("Stalemate")
     }
 }
 
@@ -182,7 +185,7 @@ function draw() {
             }
         }
     }*/
-    if (turn % 2 === 1) {
+    if (turn % 2 === 1 && !winner) {
         counter += 1;
         if (counter === 10) {
             boardHistory.push(board.toString());
