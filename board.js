@@ -123,7 +123,7 @@ const board = {
         if (opposingKing.pos[0] === x && opposingKing.pos[1] === y) {
             return false;
         }
-        if (piece.isValidMove([x, y]) && (x !== piece.pos[0] || y !== piece.pos[1])) {
+        if (piece.isValidMove([x, y]) && (x !== piece.pos[0] || y !== piece.pos[1]) && x > -1 && x < 8 && y > -1 && y < 8) {
             const oldPos = piece.pos;
             piece.pos = [x, y];
             let removedPiece;
@@ -359,13 +359,24 @@ const board = {
         const validMoves = [];
         this.pieces.forEach(piece => {
             if (piece.team === team) {
-                for (let i = 0; i < 8; i++) {
-                    for (let j = 0; j < 8; j++) {
+                if (piece.possibleMoves) {
+                    piece.possibleMoves().forEach(([i, j]) => {
                         if (this.validMove(piece, [i, j])) {
                             validMoves.push({
                                 piece,
                                 to: [i, j]
                             })
+                        }
+                    })
+                } else {
+                    for (let i = 0; i < 8; i++) {
+                        for (let j = 0; j < 8; j++) {
+                            if (this.validMove(piece, [i, j])) {
+                                validMoves.push({
+                                    piece,
+                                    to: [i, j]
+                                })
+                            }
                         }
                     }
                 }

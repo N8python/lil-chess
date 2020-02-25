@@ -22,6 +22,7 @@ let whiteRook;
 let lastBoard;
 let boardHistory = [];
 let depth;
+let AIEnabled;
 
 function endTurn() {
     if (board.checkMate("white") && !winner) {
@@ -185,7 +186,7 @@ function draw() {
             }
         }
     }*/
-    if (turn % 2 === 1 && !winner) {
+    if (turn % 2 === 1 && !winner && AIEnabled.checked) {
         counter += 1;
         if (counter === 10) {
             boardHistory.push(board.toString());
@@ -261,6 +262,7 @@ function updateBoards() {
 window.onload = () => {
     const boards = document.getElementById("boards");
     depth = document.getElementById("depth");
+    AIEnabled = document.getElementById("enabled");
     document.getElementById("saveBoard").addEventListener("click", () => {
         Swal.fire({
             title: "Enter a name to save your board under:",

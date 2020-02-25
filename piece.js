@@ -1,6 +1,7 @@
 const Piece = ({
     name,
     url,
+    possibleMoves,
     isValidMove = () => true
 }) => ({
     team,
@@ -11,6 +12,7 @@ const Piece = ({
     team,
     pos,
     isValidMove,
+    possibleMoves,
     truePos: null,
     dragging: false,
     render() {
@@ -268,5 +270,39 @@ const Pawn = Piece({
             }
         }
         return false;
+    },
+    possibleMoves() {
+        const [x, y] = this.pos;
+        if (this.team === "white") {
+            if (y === 6) {
+                return [
+                    [x, y - 1],
+                    [x, y - 2],
+                    [x - 1, y - 1],
+                    [x + 1, y - 1]
+                ]
+            } else {
+                return [
+                    [x, y - 1],
+                    [x - 1, y - 1],
+                    [x + 1, y - 1]
+                ]
+            }
+        } else {
+            if (y === 1) {
+                return [
+                    [x, y + 1],
+                    [x, y + 2],
+                    [x - 1, y + 1],
+                    [x + 1, y + 1]
+                ]
+            } else {
+                return [
+                    [x, y + 1],
+                    [x - 1, y + 1],
+                    [x + 1, y + 1]
+                ]
+            }
+        }
     }
 })
