@@ -1,0 +1,14 @@
+canvas {
+    margin-left: 16px;
+}
+
+#boards {
+    border: 2px solid black;
+    max-height: 200px;
+    max-width: 300px;
+    overflow: scroll;
+}
+
+#dashboard {
+    width: 300px;
+}

@@ -20,6 +20,18 @@ let whitePawn;
 let whiteQueen;
 let whiteRook;
 let lastBoard;
+let boardHistory = [];
+let depth;
+
+function endTurn() {
+    if (board.checkMate("white") && !winner) {
+        winner = "Black";
+        Swal.fire("Checkmate - Black Wins!")
+    } else if (board.checkMate("black") && !winner) {
+        winner = "White";
+        Swal.fire("Checkmate - White Wins!")
+    }
+}
 
 function preload() {
     blackBishop = loadImage("assets/black-bishop.png")
@@ -132,7 +144,6 @@ function setup() {
             img: blackPawn
         }))
     }
-    lastBoard = board.toString();
 }
 let counter = 0;
 
@@ -172,22 +183,15 @@ function draw() {
         }
     }*/
     if (turn % 2 === 1) {
-        lastBoard = board.toString();
         counter += 1;
         if (counter === 10) {
-            board.minimax(3, -Infinity, Infinity, false);
+            boardHistory.push(board.toString());
+            board.minimax(Number(depth.value), -Infinity, Infinity, false);
             const move = board.makeMove(board.bestMove);
             move.exec();
             counter = 0;
-            if (board.checkMate("white") && !winner) {
-                winner = "Black";
-                Swal.fire("Checkmate - Black Wins!")
-            } else if (board.checkMate("black") && !winner) {
-                winner = "White";
-                Swal.fire("Checkmate - White Wins!")
-            } else {
-                turn += 1;
-            }
+            endTurn();
+            turn += 1;
         }
     }
 
@@ -227,19 +231,77 @@ function mousePressed() {
 }
 
 function mouseReleased() {
+    boardHistory.push(board.toString());
     if (!winner) {
-        const daBoard = board.toString();
-        const oldTurn = turn;
         board.registerRelease(mousePos());
-        if (oldTurn !== turn) {
-            lastBoard = daBoard;
+    }
+    endTurn();
+}
+
+function loadBoard(key) {
+    board.fromString(localStorage["board:" + key])
+}
+
+function deleteBoard(key) {
+    localStorage.removeItem("board:" + key);
+    updateBoards();
+}
+
+function updateBoards() {
+    boards.innerHTML = "";
+    boards.innerHTML += "<ul>"
+    Object.keys(localStorage).filter(key => key.startsWith("board:")).map(key => key.replace("board:", "")).forEach(key => {
+        boards.innerHTML += `<li>${key} <button onclick="loadBoard('${key}')"><i class="fa fa-envelope-open-o"></i></button><button onclick="deleteBoard('${key}')"><i class="fa fa-trash"></i></button></li>`
+    })
+    boards.innerHTML += "</ul>"
+}
+window.onload = () => {
+    const boards = document.getElementById("boards");
+    depth = document.getElementById("depth");
+    document.getElementById("saveBoard").addEventListener("click", () => {
+        Swal.fire({
+            title: "Enter a name to save your board under:",
+            input: "text"
+        }).then((result) => {
+            if (result.value !== "") {
+                localStorage["board:" + result.value] = board.toString();
+                updateBoards();
+            }
+        })
+    })
+    document.getElementById("boardsSaved").addEventListener("click", () => {
+        if (boards.hasAttribute("hidden")) {
+            updateBoards();
+            boards.removeAttribute("hidden");
+        } else {
+            boards.setAttribute("hidden", "true");
         }
-    }
-    if (board.checkMate("white") && !winner) {
-        winner = "Black";
-        Swal.fire("Checkmate - Black Wins!")
-    } else if (board.checkMate("black") && !winner) {
-        winner = "White";
-        Swal.fire("Checkmate - White Wins!")
-    }
+    })
+    document.getElementById("undo").addEventListener("click", () => {
+        if (boardHistory.length > 1) {
+            if (turn % 2 === 0) {
+                boardHistory.pop()
+            }
+            boardHistory.pop()
+            board.fromString(boardHistory.pop())
+        }
+    })
+    depth.addEventListener("change", () => {
+        if (depth.value < 1 || depth.value > 4) {
+            if (depth.value < 1) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Invalid Minimax Depth",
+                    text: "The minimax depth you entered was less than 1. A minimax depth of 0 literally dosen't search any moves. A negative minimax depth makes no sense. These minimax depths obviously aren't of any help to the Chess AI, so you sadly cannot input them."
+                })
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Invalid Minimax Depth",
+                    text: "The minimax depth you entered was above 4. This would technically work - but a minimax depth of 5 would take up to an hour to compute one move. A depth of 10 would take longer than the known age of the universe. So let's keep it to a depth of 4 and under."
+                })
+            }
+            depth.value = 3;
+        }
+    })
 }

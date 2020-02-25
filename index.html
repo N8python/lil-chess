@@ -11,14 +11,30 @@
     <script src="piece.js"></script>
     <script src="board.js"></script>
     <script src="main.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
-    <button onclick="document.getElementById('board').value = board.toString()">Get Board</button>
-    <button onclick="board.fromString(prompt('Enter a board:'))">Load Board</button>
-    <button onclick="(board.fromString(lastBoard), (turn > 0) ? turn -= 1 : 3)">Undo</button>
-    <textarea id="board" placeholder="The Board Goes Here..."></textarea>
-    <h1 id="val" style="float:right">Evaluation:</p>
+    <br>
+    <div id="dashboard" class="w3-right w3-border w3-margin w3-padding">
+        <h3>Llama Chess</h3>
+        <h3>Board Manipulation:</h3>
+        <button id="saveBoard">Save Board</button>
+        <br>
+        <br>
+        <button id="boardsSaved">Boards Saved</button>
+        <div class="w3-border w3-margin-top w3-margin-bottom" id="boards" hidden></div>
+        <br>
+        <br>
+        <button id="undo">Undo</button>
+        <br>
+        <h3>AI</h3>
+        Minimax depth: <input id="depth" type="number" value="3" max="4" min="1">
+        <p id="val">Evaluation: 0</p>
+    </div>
+    </div>
 </body>
 
 </html>
