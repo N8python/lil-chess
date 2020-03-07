@@ -31,7 +31,7 @@ function endTurn() {
     } else if (board.checkMate("black") && !winner) {
         winner = "White";
         Swal.fire("Checkmate - White Wins!")
-    } else if (board.allMoves("white").length === 0 || board.allMoves("black").length === 0 && !winner) {
+    } else if ((board.allMoves("white").length === 0 || board.allMoves("black").length === 0) && !winner) {
         winner = "Draw";
         Swal.fire("Stalemate")
     }
